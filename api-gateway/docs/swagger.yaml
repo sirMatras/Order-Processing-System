@@ -1,0 +1,217 @@
+basePath: /
+definitions:
+  handler.CreateAccountRequest:
+    properties:
+      amount:
+        description: Баланс аккаунта
+        type: number
+    type: object
+  handler.CreateOrderRequest:
+    properties:
+      order_id:
+        description: ID ордера
+        type: string
+    type: object
+  handler.DepositRequest:
+    properties:
+      amount:
+        description: Сумма пополнения
+        type: number
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API Gateway для обработки заказов и платежей
+  title: API Gateway
+  version: "1.0"
+paths:
+  /order/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: Создает новый заказ для указанного пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Данные заказа
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateOrderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "500":
+          description: Ошибка сервера
+          schema:
+            type: string
+      summary: Создать новый заказ
+      tags:
+      - Orders
+  /order/{user_id}/{order_id}:
+    get:
+      description: Возвращает текущий статус указанного заказа
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: ID заказа
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            type: string
+      summary: Получить статус заказа
+      tags:
+      - Orders
+  /orders/{user_id}:
+    get:
+      description: Возвращает список всех заказов для указанного пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "500":
+          description: Ошибка сервера
+          schema:
+            type: string
+      summary: Получить заказы пользователя
+      tags:
+      - Orders
+  /payment/{user_id}:
+    get:
+      description: Возвращает баланс указанного пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: number
+            type: object
+        "500":
+          description: Ошибка сервера
+          schema:
+            type: string
+      summary: Получить баланс пользователя
+      tags:
+      - Payments
+    post:
+      consumes:
+      - application/json
+      description: Создает новый платежный аккаунт для указанного пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Данные платежного аккаунта
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/handler.CreateAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "500":
+          description: Ошибка сервера
+          schema:
+            type: string
+      summary: Создать новый платежный аккаунт
+      tags:
+      - Payments
+  /payment/{user_id}/deposit:
+    put:
+      consumes:
+      - application/json
+      description: Пополняет баланс указанного пользователя
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Сумма пополнения
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.DepositRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Пополнение прошло успешно
+          schema:
+            type: string
+        "400":
+          description: Неверный запрос
+          schema:
+            type: string
+        "500":
+          description: Ошибка сервера
+          schema:
+            type: string
+      summary: Пополнить баланс пользователя
+      tags:
+      - Payments
+swagger: "2.0"

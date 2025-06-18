@@ -1,0 +1,94 @@
+basePath: /
+definitions:
+  handler.PaymentStruct:
+    properties:
+      amount:
+        description: Для запросов пополнения
+        type: number
+      balance:
+        description: Для ответов с балансом
+        type: number
+      message:
+        description: Для ошибок
+        type: string
+      success:
+        description: Статус операции
+        type: boolean
+    type: object
+host: localhost:8082
+info:
+  contact: {}
+  description: API для управления платежами и балансами пользователей
+  title: Payment Service API
+  version: "1.0"
+paths:
+  /payment/{user_id}:
+    get:
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.PaymentStruct'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.PaymentStruct'
+      summary: Получить баланс
+      tags:
+      - payment
+    post:
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/handler.PaymentStruct'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.PaymentStruct'
+      summary: Создать платежный аккаунт
+      tags:
+      - payment
+  /payment/{user_id}/deposit:
+    put:
+      parameters:
+      - description: ID пользователя
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Сумма пополнения
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.PaymentStruct'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.PaymentStruct'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.PaymentStruct'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.PaymentStruct'
+      summary: Пополнить баланс
+      tags:
+      - payment
+swagger: "2.0"

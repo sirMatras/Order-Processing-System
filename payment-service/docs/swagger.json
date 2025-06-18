@@ -1,0 +1,142 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API для управления платежами и балансами пользователей",
+        "title": "Payment Service API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8082",
+    "basePath": "/",
+    "paths": {
+        "/payment/{user_id}": {
+            "get": {
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Получить баланс",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID пользователя",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.PaymentStruct"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.PaymentStruct"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Создать платежный аккаунт",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID пользователя",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/handler.PaymentStruct"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.PaymentStruct"
+                        }
+                    }
+                }
+            }
+        },
+        "/payment/{user_id}/deposit": {
+            "put": {
+                "tags": [
+                    "payment"
+                ],
+                "summary": "Пополнить баланс",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID пользователя",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Сумма пополнения",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handler.PaymentStruct"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.PaymentStruct"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.PaymentStruct"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.PaymentStruct"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.PaymentStruct": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "Для запросов пополнения",
+                    "type": "number"
+                },
+                "balance": {
+                    "description": "Для ответов с балансом",
+                    "type": "number"
+                },
+                "message": {
+                    "description": "Для ошибок",
+                    "type": "string"
+                },
+                "success": {
+                    "description": "Статус операции",
+                    "type": "boolean"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,114 @@
+basePath: /
+definitions:
+  handler.Error:
+    properties:
+      message:
+        type: string
+    type: object
+  handler.Order:
+    properties:
+      amount:
+        type: number
+      id:
+        type: string
+      status:
+        type: string
+      user_id:
+        type: string
+    type: object
+host: localhost:8083
+info:
+  contact: {}
+  description: API для обработки заказов и платежей в системе
+  title: Order Service API
+  version: "1.0"
+paths:
+  /order/{user_id}:
+    post:
+      consumes:
+      - application/json
+      description: Create new order
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Order data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Order'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Create order
+      tags:
+      - orders
+  /order/{user_id}/{order_id}:
+    get:
+      description: Get status for specific order
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.Order'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Get order status
+      tags:
+      - orders
+  /orders/{user_id}:
+    get:
+      description: Get all orders for user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/handler.Order'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      summary: Get user orders
+      tags:
+      - orders
+swagger: "2.0"
